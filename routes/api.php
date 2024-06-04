@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserControler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/hello', function () {
     return json_encode(['message' => 'success accessing api']);
+});
+
+Route::middleware('guest')->group(function () {
+    Route::resource('user', UserControler::class);
 });
