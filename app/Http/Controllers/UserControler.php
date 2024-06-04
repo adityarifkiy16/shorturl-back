@@ -32,20 +32,22 @@ class UserControler extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8'],
             'username' => ['required', 'unique:users,username'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'nomer_telpon' => ['required', 'numeric', 'digits_between:1,16'],
+            'nomer_telp' => ['required', 'numeric', 'digits_between:1,16'],
             'tempat_lahir' => ['required', 'string'],
             'tanggal_lahir' => ['required', 'date'],
             'alamat' => ['required', 'string', 'max:255'],
         ]);
 
         $data = $request->all();
-        $data['unid'] = Str::uuid();
+        $data['unid'] = Str::uuid()->toString();
         $data['password'] = Hash::make($data['password']);
+        // dd(Str::uuid()->toString());
         User::create($data);
+
+        return response()->json(['message' => 'success registration'], 200);
     }
 
     /**
