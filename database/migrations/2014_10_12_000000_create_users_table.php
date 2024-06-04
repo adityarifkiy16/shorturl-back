@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('unid');
             $table->string('name');
-            $table->string('name');
+            $table->string('username');
             $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('nomer_telp');
