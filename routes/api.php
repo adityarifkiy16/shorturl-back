@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserControler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,12 @@ Route::get('/hello', function () {
     return json_encode(['message' => 'success accessing api']);
 });
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', 'session'])->group(function () {
     Route::resource('user', UserControler::class);
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout']);
+});
+
+Route::middleware('auth')->group(function () {
+    // Route::post('/logout', [LoginController::class, 'logout']);
 });
