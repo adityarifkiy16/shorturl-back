@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\UserControler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,12 +25,14 @@ Route::get('/hello', function () {
     return json_encode(['message' => 'success accessing api']);
 });
 
-Route::middleware(['guest', 'session'])->group(function () {
-    Route::resource('user', UserControler::class);
-    Route::post('/login', [LoginController::class, 'login']);
-    Route::post('/logout', [LoginController::class, 'logout']);
-});
+Route::post('/register', RegisterController::class)->name('register');
+Route::post('/login', LoginController::class)->name('login');
 
-Route::middleware('auth')->group(function () {
-    // Route::post('/logout', [LoginController::class, 'logout']);
+
+//route hanya bisa diakses ketika sudah login dan punya jwt token
+Route::middleware('auth:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/logout', LogoutController::class)->name('logout');
 });
