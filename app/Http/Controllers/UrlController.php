@@ -53,7 +53,17 @@ class UrlController extends Controller
 
     public function redirectUrl($shorturl)
     {
-        $url = Url::where('shorturl', $shorturl)->first();
-        return redirect($url->url);
+        $url = Url::whereRaw('BINARY shorturl = ?', $shorturl)->first();
+        if ($url) {
+            return response()->json([
+                'success' => true,
+                'original_url' => $url->url
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'url not found'
+        ], 404);
     }
 }
