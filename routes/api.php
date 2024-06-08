@@ -39,8 +39,9 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('url')->group(function () {
         Route::get('/show', [UrlController::class, 'show'])->name('url.show');
         Route::post('/create', [UrlController::class, 'create'])->name('url.create');
-        Route::get('{shorturl}', [UrlController::class, 'redirectUrl'])->name('shorturl');
     });
 
     Route::get('/logout', LogoutController::class)->name('logout');
 });
+
+Route::get('/url/{shorturl}', [UrlController::class, 'redirectUrl'])->name('shorturl');
