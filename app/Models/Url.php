@@ -19,7 +19,6 @@ class Url extends Model
     protected $hidden = [
         'id',
         'user_id',
-        'unid',
     ];
 
 
