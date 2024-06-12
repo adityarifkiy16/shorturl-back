@@ -44,11 +44,6 @@ Route::middleware('auth:api')->group(function () {
             ]
         ]);
     });
-    Route::get('/user', function (Request $request) {
-        return $request->user()->id;
-    });
-
-
     Route::get('/logout', LogoutController::class)->name('logout');
 });
 
