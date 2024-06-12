@@ -33,7 +33,7 @@ class RegisterController extends Controller
 
         if ($user) {
             return response()->json([
-                'success' => true,
+                'code' => 200,
                 'message' => 'success registration',
             ], 200);
         }

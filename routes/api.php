@@ -22,26 +22,31 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/hello', function () {
-    return json_encode(['message' => 'success accessing api']);
-});
-
+// auth
 Route::post('/register', RegisterController::class)->name('register');
 Route::post('/login', LoginController::class)->name('login');
 
 
-//route hanya bisa diakses ketika sudah login dan punya jwt token
+//authorize
 Route::middleware('auth:api')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user()->id;
-    });
 
     Route::prefix('url')->group(function () {
         Route::get('/show', [UrlController::class, 'show'])->name('url.show');
-        Route::post('/create', [UrlController::class, 'create'])->name('url.create');
     });
 
+    Route::get('/hello', function () {
+        return json_encode([
+            'code' => 200,
+            'message' => 'this is message!',
+            'data' => [
+                'id' => 1,
+                'dummy' => 'hello dummy',
+            ]
+        ]);
+    });
     Route::get('/logout', LogoutController::class)->name('logout');
 });
 
+// non-authorize
+Route::post('/url/create', [UrlController::class, 'create'])->name('url.create');
 Route::get('/url/{shorturl}', [UrlController::class, 'redirectUrl'])->name('shorturl');

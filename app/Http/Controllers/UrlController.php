@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Url;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UrlController extends Controller
 {
+    private $infouser;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->infouser = $request->user('api');
+            return $next($request);
+        });
+    }
     public function show(Request $request)
     {
         $user = $request->user();
@@ -17,37 +25,37 @@ class UrlController extends Controller
         })->get();
 
         return response()->json([
-            'success' => true,
-            'url' => $urls
+            'code' => 200,
+            'data' => [
+                'url' => $urls
+            ]
         ], 200);
     }
 
     public function create(Request $request)
     {
-        $user = Auth::user();
         $rules = [
-            'url' => 'required|string|max:255',
+            'url' => 'required|string',
         ];
         $message = [
             'required' => 'The :attribute field is required.'
         ];
         $request->validate($rules, $message);
         $data = $request->all();
-        $data['user_id'] = $user->id;
+        @$data['user_id'] = $this->infouser->id;
         $data['unid'] = Str::uuid()->toString();
         $data['shorturl'] = Str::random(5);
         $url = Url::create($data);
-
         if ($url) {
             return response()->json([
-                'success' => true,
-                'message' => 'success',
-                'url' => $url
+                'code' => 200,
+                'message' => 'Get Data Success',
+                'data' => ['url' => $url]
             ], 200);
         }
-
         return response()->json([
-            'success' => false,
+            'code' => 409,
+            'message' => 'Failed to create url'
         ], 409);
     }
 
@@ -56,14 +64,14 @@ class UrlController extends Controller
         $url = Url::whereRaw('BINARY shorturl = ?', $shorturl)->first();
         if ($url) {
             return response()->json([
-                'success' => true,
-                'original_url' => $url->url
+                'code' => 200,
+                'messages' => 'Get Data Success',
+                'data' => ['original_url' => $url->url]
             ], 200);
         }
-
         return response()->json([
-            'success' => false,
-            'message' => 'url not found'
+            'code' => 404,
+            'message' => 'Url Not Found'
         ], 404);
     }
 }
