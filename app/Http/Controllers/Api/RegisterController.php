@@ -39,7 +39,8 @@ class RegisterController extends Controller
         }
 
         return response()->json([
-            'success' => false,
+            'code' => 409,
+            'message' => 'there is conflict data'
         ], 409);
     }
 }
